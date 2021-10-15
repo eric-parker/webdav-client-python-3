@@ -363,7 +363,8 @@ class Client(object):
             raise RemoteResourceNotFound(urn.path())
 
         response = self.execute_request(action='download', path=urn.quote())
-        total = int(response.headers['content-length'])
+        length = response.headers.get('content-length')
+        total = int(length) if length else None
         current = 0
 
         if callable(progress):
@@ -455,7 +456,8 @@ class Client(object):
 
         with open(local_path, 'wb') as local_file:
             response = self.execute_request('download', urn.quote())
-            total = int(response.headers['content-length'])
+            length = response.headers.get('content-length')
+            total = int(length) if length else None
             current = 0
 
             if callable(progress):
